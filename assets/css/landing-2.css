@@ -22,7 +22,7 @@ body {
   position: relative; }
   .pb_slant-light:after,
   .pb_slant-white:after {
-    content: "";
+    /* content: ""; */
     position: absolute;
     bottom: -100px;
     left: -50px;
