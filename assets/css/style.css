@@ -1379,7 +1379,7 @@ a {
       color: #868e96; }
 
 .pb_footer {
-  padding: 5em 0; }
+  padding: 15px; }
   .pb_footer .list-unstyled li {
     margin-bottom: 10px;
     line-height: 1.5; }
@@ -1398,7 +1398,9 @@ a {
   margin: 0;
   padding: 0;
   color: #868e96; }
-
+body{
+  background-color: #f2f4f9 !important;
+}
 .pb_card_v2 .card-body {
   padding-top: 0; }
   .pb_card_v2 .card-body h4 {
