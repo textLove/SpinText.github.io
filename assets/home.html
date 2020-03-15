@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="./css/helpers.css">
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/landing-2.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/7.8.1/firebase-app.js"></script>
     <!-- include only the Firebase features as you need -->
@@ -37,6 +38,15 @@
     <!-- initialize the SDK after all desired features are loaded -->
     <script defer src="/__/firebase/init.js"></script>
     <style>
+        div#imageContainer {
+            height: 330px;
+        }
+
+        div#imageContainer img {
+            width: 50%;
+            height: 50%;
+        }
+
         .doButton {
             position: absolute;
             bottom: 40px;
@@ -80,15 +90,15 @@
             <div class="row align-items-center justify-content-center">
                 <div class="col-md-5">
                     <div class="form-group">
-                        <label for="textArea1">Source Text</label>
+                        <label for="textArea1">Source Text(Mandatory)</label>
                         <textarea class="form-control" id="textArea1" rows="13"></textarea>
                     </div>
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-md-5">
                     <div class="form-group">
-                        <label for="textArea2">Output Text</label>
-                        <textarea class="form-control" id="textArea2" rows="13"></textarea>
+                        <label for="textArea2">Output</label>
+                        <div id="imageContainer"></div>
                     </div>
                 </div>
             </div>
@@ -128,12 +138,23 @@
                 });
             }
             $('#convert').click(function () {
-                var data = $('#inputText').val().trim();
-                if (data && userData) {
-                    $.post('http://localhost:5001/uploadText', { data, userData },
-                        (response) => {
+                $('#imageContainer').empty()
+                var text = $('#textArea1').val().trim();
+                if (text && userData) {
+                    
+                    axios.post('https://us-central1-spintext-a7452.cloudfunctions.net/api/processText',
+                        { text, uid: userData.uid })
+                        .then((response) => {
+                            response.data.forEach((img) =>
+                                $('#imageContainer').append('<img src="' + img + '"/>')
+                            )
                             console.log(response)
-                        })
+                        }, (error) => {
+                            console.log(error);
+                        });
+
+
+
                 }
             });
             firebase.auth().onAuthStateChanged(function (user) {
@@ -141,6 +162,7 @@
                     firebase.database().ref('users/' + user.uid)
                         .once('value', snapshot => {
                             userData = snapshot.val();
+                            userData.uid = user.uid;
                         });
                 } else {
                     signOut()
