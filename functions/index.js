@@ -25,38 +25,44 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 app.post('/processText', (req, res) => {
-    const { uid, text } = req.body;
-    if (uid && text) {
-        firebase.database().ref(`/users/${uid}`).once('value').then(snap => {
-            var count = snap.val().usage;
-            cont = parseInt(count);
-            if (count < MAX_COUNT) {
-                // UPDATE THE API URL HERE
-                const API_URL = 'https://jsonplaceholder.typicode.com/photos/1';
+    const { uid, DATA } = req.body;
 
-                axios.get(API_URL)
-                    .then((apiResponse) => {
-                        const apiData = apiResponse.data
-                        firebase.database().ref(`/users/${uid}`)
-                            .update({ usage: count + 1 })
-                            .then(() => {
+    const API_URL = 'http://35.193.179.215:80/spintext';
+    var API_BODY = DATA;
+    if (uid && API_BODY) {
 
-                                //AFTER UPDATING FIREBASE COUNT
-                                // PROCESS RESPOSNSE AND SENDIT
-                                //RESPOSNE : {data:[...list of image URL....]}
+        // firebase.database().ref(`/users/${uid}`).once('value').then(snap => {
+        var count = 0 //snap.val().usage;
+        console.log(API_URL, API_BODY);
+        cont = parseInt(count);
+        if (count < MAX_COUNT) {
+            // UPDATE THE API URL HERE
+            console.log(API_URL, API_BODY);
+            axios.post(API_URL, API_BODY)
+                .then((apiResponse) => {
+                    const apiData = apiResponse.data
+                    // firebase.database().ref(`/users/${uid}`)
+                    //     .update({ usage: count + 1 })
+                    //     .then(() => {
+
+                    //AFTER UPDATING FIREBASE COUNT
+                    // PROCESS RESPOSNSE AND SENDIT
+                    //RESPOSNE : {data:[...list of image URL....]}
 
 
 
-                                res.json({
-                                    data: [apiData.url]
-                                })
-                            });
-                    });
+                    res.json({
+                        data: apiData
+                    })
+                    // });
+                }).catch(function (error) {
+                    console.log("#ERROR",error.data);
+                }); I
 
-            } else {
-                res.status(400).send('Max limit of the day reached');
-            }
-        })
+        } else {
+            res.status(400).send('Max limit of the day reached');
+        }
+        // })
     } else {
         res.status(400).send();
     }
