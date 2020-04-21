@@ -199,6 +199,21 @@
                         content: $('#textArea2').val().trim()
                     }
                 if (DATA && userData) {
+
+                    // var TEST = 'https://93b0f815.ngrok.io/spintext-a7452/us-central1/api/processText';
+                    // TEST = 'http://localhost:5001/spintext-a7452/us-central1/api/processText';
+                    // axios.post('https://us-central1-spintext-a7452.cloudfunctions.net/api/processText',
+                    //     { DATA, uid: userData.uid })
+                    //     .then((response) => {
+                    //         $('#convert').text('Convert');
+                    //         debugger
+                    //         response.data.data.forEach((img) =>
+                    //             $('#imageContainer').append('<img src="' + img + '"/>')
+                    //         )
+                    //         console.log(response)
+                    //     }, (error) => {
+                    //         console.log(error);
+                    //     });
                     axios.post('http://35.193.179.215:80/spintext', DATA)
                         .then((apiResponse) => {
                             $('#convert').text('Convert')

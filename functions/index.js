@@ -9,7 +9,7 @@ const app = express();
 
 const MAX_COUNT = 500;
 
-app.use(cors({ origin: true }));
+app.use(cors());
 app.use(bodyParser.json())
 
 var firebaseConfig = {
@@ -29,43 +29,18 @@ app.post('/processText', (req, res) => {
 
     const API_URL = 'http://35.193.179.215:80/spintext';
     var API_BODY = DATA;
-    if (uid && API_BODY) {
-
-        // firebase.database().ref(`/users/${uid}`).once('value').then(snap => {
-        var count = 0 //snap.val().usage;
-        console.log(API_URL, API_BODY);
-        cont = parseInt(count);
-        if (count < MAX_COUNT) {
-            // UPDATE THE API URL HERE
-            console.log(API_URL, API_BODY);
-            axios.post(API_URL, API_BODY)
-                .then((apiResponse) => {
-                    const apiData = apiResponse.data
-                    // firebase.database().ref(`/users/${uid}`)
-                    //     .update({ usage: count + 1 })
-                    //     .then(() => {
-
-                    //AFTER UPDATING FIREBASE COUNT
-                    // PROCESS RESPOSNSE AND SENDIT
-                    //RESPOSNE : {data:[...list of image URL....]}
-
-
-
-                    res.json({
-                        data: apiData
-                    })
-                    // });
-                }).catch(function (error) {
-                    console.log("#ERROR",error.data);
-                }); I
-
-        } else {
-            res.status(400).send('Max limit of the day reached');
-        }
-        // })
-    } else {
-        res.status(400).send();
-    }
+    console.log("#INCOMMING", API_BODY);
+    axios.post(API_URL, API_BODY)
+        .then((apiResponse) => {
+            const apiData = apiResponse.data
+            res.json({
+                data: apiData
+            })
+            console.log("#DATA", apiData);
+        }).catch(function (error) {
+            console.log("#ERROR", error.data);
+            res.status(500).send();
+        });
 })
 
 exports.api = functions.https.onRequest(app);
