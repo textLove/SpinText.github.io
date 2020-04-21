@@ -94,7 +94,7 @@
     <!-- END nav -->
 
     <section class="pb_xl_py_cover overflow-hidden pb_slant-light pb_gradient_v1 cover-bg-opacity-8"
-        style="background-image: url(./images/1900x1200_img_5.jpg)">
+        style="background-image: url(./images/1900x1200_img_5.jpg);height: 100vh;">
         <div class="container">
             <div id="switchWrapper" class="custom-control custom-switch">
                 <input type="checkbox" checked class="custom-control-input" id="customSwitch1">
@@ -158,16 +158,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var TEST = [
-                // "https://www.beautyofbirds.com/images/birds/IndianRingnecks.jpg",
-                "https://www.thesprucepets.com/thmb/Ghqrvxaim4ywpyXGd47D4IRm4PU=/1920x1080/filters:fill(auto,1)/parrot-1209201_1920-592272a53df78cf5fa2b71fe.jpg",
-                "https://media.newyorker.com/photos/5909708f1c7a8e33fb38eb54/16:9/w_1280,c_limit/650925_ra368.jpg",
-                "https://www.gutenberg.org/files/36039/36039-h/images/titlepage.gif",
-                "https://www.kidsgen.com/stories/bedtime_stories/images/wise-parrot.jpg"
-            ]
-            TEST.forEach((img) =>
-                $('#imageContainer').append('<img src="' + img + '"/>')
-            )
+            // async function postData(url = '', data = {}) {
+            //     const response = await fetch(url, {
+            //         method: 'POST',
+            //         mode: 'cors',
+            //         credentials: 'same-origin',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         body: JSON.stringify(data)
+            //     });
+            //     return response.json();
+            // }
             $('#logout').click(signOut);
             $('#pan1').hide();
             var userData;
@@ -189,7 +191,7 @@
             })
             $('#convert').click(function () {
                 $('#imageContainer').empty()
-
+                $('#convert').text('Loading....');
                 var DATA = $('#customSwitch1').is(":checked") ? {
                     url: $('#textArea3').val().trim()
                 } : {
@@ -197,20 +199,17 @@
                         content: $('#textArea2').val().trim()
                     }
                 if (DATA && userData) {
-                    var LOCAL = 'http://localhost:5000/spintext-a7452/us-central1/api/processText';
-                    axios.post(LOCAL || 'https://us-central1-spintext-a7452.cloudfunctions.net/api/processText',
-                        { DATA, uid: userData.uid })
-                        .then((response) => {
-                            response.data.data.forEach((img) =>
+                    axios.post('http://35.193.179.215:80/spintext', DATA)
+                        .then((apiResponse) => {
+                            $('#convert').text('Convert')
+                            const apiData = apiResponse.data
+                            apiData.forEach((img) =>
                                 $('#imageContainer').append('<img src="' + img + '"/>')
                             )
-                            console.log(response)
-                        }, (error) => {
-                            console.log(error);
+                        })
+                        .catch(function (error) {
+                            console.log("#ERROR", error.data);
                         });
-
-
-
                 }
             });
             firebase.auth().onAuthStateChanged(function (user) {
