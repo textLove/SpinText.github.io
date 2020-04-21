@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reviews - Text Love</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="description" content="Free Bootstrap 4 Template by uicookies.com">
+    <meta name="keywords"
+        content="Free website templates, Free bootstrap themes, Free template, Free bootstrap, Free website template">
+
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,600|Montserrat:200,300,400"
+        rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/loadingio/ldbutton@v1.0.1/dist/ldbtn.min.css" />
+    <link rel="stylesheet" href="./css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="./css/loading.min.css">
+    <link rel="stylesheet" href="./fonts/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="./fonts/law-icons/font/flaticon.css">
+
+    <link rel="stylesheet" href="./fonts/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./css/slick.css">
+    <link rel="stylesheet" href="./css/slick-theme.css">
+
+    <link rel="stylesheet" href="./css/helpers.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/landing-2.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.8.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.8.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.8.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.8.1/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.8.1/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+    <style>
+        div#imageContainer {
+            height: 330px;
+        }
+
+        nav {
+            background: #4f7ddb;
+        }
+
+        .imgMainBOx>div {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        div#msgBox {
+            width: 60%;
+            margin-left: 20px;
+            width: 60%;
+            margin-left: 20px;
+            height: 400px;
+            overflow: auto;
+            padding: 0px 1px;
+        }
+
+        div#msgBox p {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            background: #ffffff;
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        #switchWrapper {
+            position: absolute;
+            top: 75px;
+            left: calc(50% - 250px);
+            width: 500px;
+            border-radius: 5px;
+        }
+
+        div#imageContainer img {
+            width: 50%;
+            height: 50%;
+        }
+
+        body {
+            background-color: #e2e1e0;
+        }
+
+        .imgMainBOx {
+            position: relative;
+            top: 180px;
+            width: 800px;
+            margin: 0 auto;
+        }
+
+        .click {
+            border: 1px solid rgba(81, 203, 238, 1);
+            box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+        }
+
+        .doButton {
+            margin: 10px auto;
+            width: 85px;
+        }
+
+        div#reviewBox {
+            max-height: 340px;
+            overflow: auto;
+            display: grid;
+            grid-gap: 5px;
+            width: 400px;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-template-rows: repeat(2, 100px);
+        }
+
+        div#reviewBox>div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100px;
+            justify-content: center;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        div#reviewBox p {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .doButton button {
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body data-spy="scroll" data-target="#pb-navbar" style="overflow: unset;" data-offset="200">
+
+    <nav class="navbar navbar-expand-lg navbar-dark pb_navbar pb_scrolled-light" id="pb-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="/index.html">Vission 3</a>
+            <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse"
+                data-target="#probootstrap-navbar" aria-controls="probootstrap-navbar" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span><i class="ion-navicon"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" id="probootstrap-navbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="/home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/reviews.html">Reviews</a></li>
+                    <li id="logout" class="nav-item cta-btn ml-xl-2 ml-lg-2 ml-md-0 ml-sm-0 ml-0"><a class="nav-link"
+                            href="#" target="_blank"><span class="pb_rounded-4 px-4">
+                                Logout
+                            </span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- END nav -->
+
+    <section class="sec">
+        <div class="container">
+            <div id="switchWrapper" class="custom-control custom-switch">
+                <input type="text" id="textArea3" placeholder="CSV path"
+                    value="https://www.kidsgen.com/stories/bedtime_stories/a_wise_parrot.htm" class="form-control"
+                    aria-label="url" aria-describedby="basic-addon1" />
+                <div class="doButton">
+                    <button id="convert" type="button" class="btn btn-primary">Convert</button>
+                </div>
+            </div>
+            <div class="imgMainBOx">
+                <label for="textArea2">Output</label>
+                <div>
+                    <div id="reviewBox">
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+                        <div>
+                            <div>Good</div>
+                            <p>Review(12)</p>
+                        </div>
+                    </div>
+                    <div id="msgBox">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi varius rhoncus nisl vitae
+                            molestie. Aliquam venenatis tristique porttitor. Mauris eget libero lacinia, venenatis mi
+                            at, varius nibh. Ut ultrices odio a ante faucibus, quis hendrerit quam scelerisque. Nam
+                            turpis tellus, pharetra quis dignissim ut, bibendum ac ipsum. Morbi eu sapien justo. Morbi
+                            sit amet aliquet dolor. Etiam sit amet pellentesque augue. Cras facilisis lorem facilisis
+                            tempus dignissim. Vivamus lacinia lorem convallis volutpat maximus. Vestibulum ut aliquet
+                            libero, sit amet accumsan enim.Nunc feugiat libero sed erat ullamcorper, sit amet convallis
+                            leo blandit. Aliquam molestie turpis viverra, cursus neque ut, posuere quam. Sed accumsan,
+                            libero sit amet vestibu</p>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- END section -->
+
+    <!-- loader -->
+    <div id="pb_loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+            <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+            <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                stroke="#1d82ff" /></svg></div>
+
+
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/popper.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/slick.min.js"></script>
+    <script src="./js/jquery.waypoints.min.js"></script>
+    <script src="./js/jquery.easing.1.3.js"></script>
+    <script src="./js/main.js"></script>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('#logout').click(signOut);
+            $('#pan1').hide();
+            var userData;
+            function signOut() {
+                firebase.auth().signOut().then(function () {
+                    window.location = "/index.html"
+                }, function (error) {
+                    console.error(error)
+                });
+            }
+            $('div#reviewBox>div').on('click', (e) => {
+                $('div#reviewBox>div').removeClass('click')
+                var el = $(e.currentTarget);
+                el.addClass('click');
+                debugger
+                var ID = el.data('id');
+                if (ID) {
+                    $('#msgBox').empty();
+                    axios.post('https://35.193.179.215:443/reviews', {
+                        ids: ID
+                    }).then((apiResponse) => {
+                        const apiData = apiResponse.data
+                        apiData.forEach((dt) =>
+                            $('#msgBox').append(`<p>${dt.review}</p>`)
+                        )
+                    }).catch(function (error) {
+                        console.log("#ERROR", error.data);
+                    });
+                }
+            })
+            $('#customSwitch1').click(() => {
+                if ($('#customSwitch1').is(":checked")) {
+                    $('#pan1').hide();
+                    $('#pan2').show();
+                } else {
+                    $('#pan2').hide();
+                    $('#pan1').show();
+                }
+            })
+            $('#convert').click(function () {
+                $('#msgBox').empty()
+                $('#convert').text('Loading....').attr("disabled", true);
+                $('#reviewBox').empty();
+                var DATA = $('#textArea3').val().trim();
+                if (DATA && userData) {
+                    debugger
+                    axios.post('https://35.193.179.215:443/reviewsummary', DATA)
+                        .then((apiResponse) => {
+                            $('#convert').text('Convert').attr("disabled", false);
+                            const apiData = apiResponse.data
+                            apiData.forEach((dt) => {
+                                var tmpl = $(`<div><div>${dt.keyPhrase}</div><p>${dt.reviewIds.length}</p></div>`);
+                                tmpl.data('id', dt.reviewIds);
+                                $('#reviewBox').append(tmpl);
+                            })
+                        })
+                        .catch(function (error) {
+                            console.log("#ERROR", error.data);
+                        });
+                }
+            });
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    firebase.database().ref('users/' + user.uid)
+                        .once('value', snapshot => {
+                            userData = snapshot.val();
+                            userData.uid = user.uid;
+                        });
+                } else {
+                    signOut()
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

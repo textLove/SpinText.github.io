@@ -83,6 +83,7 @@
             <div class="collapse navbar-collapse" id="probootstrap-navbar">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/reviews.html">Reviews</a></li>
                     <li id="logout" class="nav-item cta-btn ml-xl-2 ml-lg-2 ml-md-0 ml-sm-0 ml-0"><a class="nav-link"
                             href="#" target="_blank"><span class="pb_rounded-4 px-4">
                                 Logout
@@ -191,7 +192,7 @@
             })
             $('#convert').click(function () {
                 $('#imageContainer').empty()
-                $('#convert').text('Loading....');
+                $('#convert').text('Loading....').attr("disabled", true);
                 var DATA = $('#customSwitch1').is(":checked") ? {
                     url: $('#textArea3').val().trim()
                 } : {
@@ -199,24 +200,9 @@
                         content: $('#textArea2').val().trim()
                     }
                 if (DATA && userData) {
-
-                    // var TEST = 'https://93b0f815.ngrok.io/spintext-a7452/us-central1/api/processText';
-                    // TEST = 'http://localhost:5001/spintext-a7452/us-central1/api/processText';
-                    // axios.post('https://us-central1-spintext-a7452.cloudfunctions.net/api/processText',
-                    //     { DATA, uid: userData.uid })
-                    //     .then((response) => {
-                    //         $('#convert').text('Convert');
-                    //         debugger
-                    //         response.data.data.forEach((img) =>
-                    //             $('#imageContainer').append('<img src="' + img + '"/>')
-                    //         )
-                    //         console.log(response)
-                    //     }, (error) => {
-                    //         console.log(error);
-                    //     });
-                    axios.post('https://35.193.179.215:80/spintext', DATA)
+                    axios.post('https://35.193.179.215:443/spintext', DATA)
                         .then((apiResponse) => {
-                            $('#convert').text('Convert')
+                            $('#convert').text('Convert').attr("disabled", false);
                             const apiData = apiResponse.data
                             apiData.forEach((img) =>
                                 $('#imageContainer').append('<img src="' + img + '"/>')
