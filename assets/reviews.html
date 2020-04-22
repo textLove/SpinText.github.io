@@ -42,6 +42,10 @@
             height: 330px;
         }
 
+        input#textArea3 {
+            width: 100%;
+        }
+
         nav {
             background: #4f7ddb;
         }
@@ -94,8 +98,8 @@
         }
 
         .click {
-            border: 1px solid rgba(81, 203, 238, 1);
-            box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+            border: 3px solid rgb(27, 255, 0);
+            box-shadow: 0 0 5px rgb(27, 255, 0) !important;
         }
 
         .doButton {
@@ -104,7 +108,7 @@
         }
 
         div#reviewBox {
-            max-height: 340px;
+            max-height: 450px;
             overflow: auto;
             display: grid;
             grid-gap: 5px;
@@ -113,16 +117,33 @@
             grid-template-rows: repeat(2, 100px);
         }
 
+        div#reviewBox>div>div {
+            font-size: 16px;
+            text-align: center;
+            color: #ffff;
+            font-weight: 600;
+        }
+        div#reviewBox>div p{
+            cursor: pointer;
+        }
         div#reviewBox>div {
             display: flex;
             flex-direction: column;
             align-items: center;
             height: 100px;
             justify-content: center;
+            color: #ffff;
             border-radius: 5px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
             background: #ffffff;
-            cursor: pointer;
+        }
+
+        .positive {
+            background: #4f7ddb !important;
+        }
+
+        .negative {
+            background-color: #be2828 !important;
         }
 
         div#reviewBox p {
@@ -150,7 +171,7 @@
             </button>
             <div class="collapse navbar-collapse" id="probootstrap-navbar">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="/home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/home.html">Stories</a></li>
                     <li class="nav-item"><a class="nav-link" href="/reviews.html">Reviews</a></li>
                     <li id="logout" class="nav-item cta-btn ml-xl-2 ml-lg-2 ml-md-0 ml-sm-0 ml-0"><a class="nav-link"
                             href="#" target="_blank"><span class="pb_rounded-4 px-4">
@@ -166,7 +187,7 @@
         <div class="container">
             <div id="switchWrapper" class="custom-control custom-switch">
                 <input type="text" id="textArea3" placeholder="CSV path"
-                    value="https://www.kidsgen.com/stories/bedtime_stories/a_wise_parrot.htm" class="form-control"
+                    value="https://35.193.179.215/datasets/reviews/huawei_p9_plus_(p9+)_vie-l29_64gb_5.5_inch_12_mp_dual_sim_lte_factory_unlocked_-_international_stock_no_warranty_(quartz_grey).csv"
                     aria-label="url" aria-describedby="basic-addon1" />
                 <div class="doButton">
                     <button id="convert" type="button" class="btn btn-primary">Convert</button>
@@ -176,59 +197,10 @@
                 <label for="textArea2">Output</label>
                 <div>
                     <div id="reviewBox">
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
-
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
-                        <div>
-                            <div>Good</div>
-                            <p>Review(12)</p>
-                        </div>
+                       
                     </div>
                     <div id="msgBox">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi varius rhoncus nisl vitae
-                            molestie. Aliquam venenatis tristique porttitor. Mauris eget libero lacinia, venenatis mi
-                            at, varius nibh. Ut ultrices odio a ante faucibus, quis hendrerit quam scelerisque. Nam
-                            turpis tellus, pharetra quis dignissim ut, bibendum ac ipsum. Morbi eu sapien justo. Morbi
-                            sit amet aliquet dolor. Etiam sit amet pellentesque augue. Cras facilisis lorem facilisis
-                            tempus dignissim. Vivamus lacinia lorem convallis volutpat maximus. Vestibulum ut aliquet
-                            libero, sit amet accumsan enim.Nunc feugiat libero sed erat ullamcorper, sit amet convallis
-                            leo blandit. Aliquam molestie turpis viverra, cursus neque ut, posuere quam. Sed accumsan,
-                            libero sit amet vestibu</p>
-
+                       
                     </div>
                 </div>
             </div>
@@ -266,25 +238,29 @@
                     console.error(error)
                 });
             }
-            $('div#reviewBox>div').on('click', (e) => {
+            function getReviewDetail(e) {
                 $('div#reviewBox>div').removeClass('click')
-                var el = $(e.currentTarget);
+                var el = $(e.currentTarget).parent();
                 el.addClass('click');
                 debugger
                 var ID = el.data('id');
+                var url = el.data('url');
                 if (ID) {
                     $('#msgBox').empty();
                     axios.post('https://35.193.179.215:443/reviews', {
-                        ids: ID
+                        ids: ID, url
                     }).then((apiResponse) => {
                         const apiData = apiResponse.data
                         apiData.forEach((dt) =>
-                            $('#msgBox').append(`<p>${dt.review}</p>`)
+                            $('#msgBox').append(`<p>${dt}</p>`)
                         )
                     }).catch(function (error) {
                         console.log("#ERROR", error.data);
                     });
                 }
+            }
+            $('div#reviewBox>div p').on('click', (e) => {
+
             })
             $('#customSwitch1').click(() => {
                 if ($('#customSwitch1').is(":checked")) {
@@ -302,13 +278,16 @@
                 var DATA = $('#textArea3').val().trim();
                 if (DATA && userData) {
                     debugger
-                    axios.post('https://35.193.179.215:443/reviewsummary', DATA)
+                    axios.post('https://35.193.179.215:443/reviewsummary', { url: DATA })
                         .then((apiResponse) => {
                             $('#convert').text('Convert').attr("disabled", false);
                             const apiData = apiResponse.data
+                            debugger
                             apiData.forEach((dt) => {
-                                var tmpl = $(`<div><div>${dt.keyPhrase}</div><p>${dt.reviewIds.length}</p></div>`);
+                                var tmpl = $(`<div class="${dt.sentiment}"><div>${dt.keyPhrase}</div><p>Reviews(${dt.reviewIds.length})</p></div>`);
                                 tmpl.data('id', dt.reviewIds);
+                                tmpl.data('url', DATA);
+                                tmpl.find('p').click(getReviewDetail);
                                 $('#reviewBox').append(tmpl);
                             })
                         })
