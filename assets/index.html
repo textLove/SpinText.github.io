@@ -90,7 +90,7 @@
               <div class="pb_select-wrap">
                 <select id="type" class="form-control pb_height-50 reverse">
                   <option value="free" selected>Free</option>
-                  <option value="basic">Basic</option>
+                  <option value="basic">Paid</option>
                 </select>
               </div>
             </div>
@@ -191,7 +191,7 @@
             email: user.email,
             profile_picture: user.photoURL
           }).then(() => {
-            window.location = "/home.html"
+            window.location = "/reviews.html"
           }).catch((e) => { debugger })
         }).catch(function (error) {
           var errorCode = error.code;
