@@ -37,6 +37,12 @@
     <script defer src="/__/firebase/7.8.1/firebase-storage.js"></script>
     <!-- initialize the SDK after all desired features are loaded -->
     <script defer src="/__/firebase/init.js"></script>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/popper.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/slick.min.js"></script>
+    <script src="./js/jquery.waypoints.min.js"></script>
+    <script src="./js/jquery.easing.1.3.js"></script>
     <style>
         div#imageContainer {
             height: 330px;
@@ -97,9 +103,16 @@
             margin: 0 auto;
         }
 
+        mark.marked {
+            background: #070000d6;
+            color: #ffffff;
+            font-weight: 400;
+            border-radius: 5px;
+            padding: 3px 5px;
+        }
+
         .click {
-            border: 3px solid rgb(27, 255, 0);
-            box-shadow: 0 0 5px rgb(27, 255, 0) !important;
+            background-color: #EFFAE4 !important;
         }
 
         .doButton {
@@ -108,42 +121,43 @@
         }
 
         div#reviewBox {
-            max-height: 450px;
+            margin-bottom: 20px;
             overflow: auto;
             display: grid;
             grid-gap: 5px;
-            width: 400px;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            grid-template-rows: repeat(2, 100px);
+            width: 640px;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            grid-template-rows: repeat(2, 110px);
         }
 
         div#reviewBox>div>div {
             font-size: 16px;
             text-align: center;
-            color: #ffff;
+            background: #EFFAE4 !important;
             font-weight: 600;
         }
-        div#reviewBox>div p{
+
+        div#reviewBox>div p {
             cursor: pointer;
         }
+
         div#reviewBox>div {
             display: flex;
             flex-direction: column;
             align-items: center;
             height: 100px;
+            cursor: pointer;
             justify-content: center;
-            color: #ffff;
             border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-            background: #ffffff;
+            background: #FFFFFF;
         }
 
         .positive {
-            background: #4f7ddb !important;
+            border: 3px solid #71E277 !important;
         }
 
         .negative {
-            background-color: #be2828 !important;
+            border: 3px solid #F6BFB9 !important;
         }
 
         div#reviewBox p {
@@ -163,7 +177,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark pb_navbar pb_scrolled-light" id="pb-navbar">
         <div class="container">
-            <a class="navbar-brand" href="/index.html">Vission 3</a>
+            <a class="navbar-brand" href="/index.html">Spin Text</a>
             <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse"
                 data-target="#probootstrap-navbar" aria-controls="probootstrap-navbar" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -197,10 +211,10 @@
                 <label for="textArea2">Output</label>
                 <div>
                     <div id="reviewBox">
-                       
+
                     </div>
                     <div id="msgBox">
-                       
+
                     </div>
                 </div>
             </div>
@@ -216,13 +230,9 @@
                 stroke="#1d82ff" /></svg></div>
 
 
-    <script src="./js/jquery.min.js"></script>
-    <script src="./js/popper.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/slick.min.js"></script>
-    <script src="./js/jquery.waypoints.min.js"></script>
-    <script src="./js/jquery.easing.1.3.js"></script>
+
     <script src="./js/main.js"></script>
+    <script src="./js/mark.min.js"></script>
 
 
 
@@ -240,10 +250,11 @@
             }
             function getReviewDetail(e) {
                 $('div#reviewBox>div').removeClass('click')
-                var el = $(e.currentTarget).parent();
+                var el = $(e.currentTarget);
                 el.addClass('click');
                 debugger
                 var ID = el.data('id');
+                var keyPhrase = el.data('keyPhrase');
                 var url = el.data('url');
                 if (ID) {
                     $('#msgBox').empty();
@@ -254,8 +265,12 @@
                         apiData.forEach((dt) =>
                             $('#msgBox').append(`<p>${dt}</p>`)
                         )
+                        $('#msgBox').mark(keyPhrase, {
+                            className: 'marked',
+                            separateWordSearch: false
+                        })
                     }).catch(function (error) {
-                        console.log("#ERROR", error.data);
+                        console.log("#ERROR", error);
                     });
                 }
             }
@@ -286,13 +301,14 @@
                             apiData.forEach((dt) => {
                                 var tmpl = $(`<div class="${dt.sentiment}"><div>${dt.keyPhrase}</div><p>Reviews(${dt.reviewIds.length})</p></div>`);
                                 tmpl.data('id', dt.reviewIds);
+                                tmpl.data('keyPhrase', dt.keyPhrase);
                                 tmpl.data('url', DATA);
-                                tmpl.find('p').click(getReviewDetail);
+                                tmpl.click(getReviewDetail);
                                 $('#reviewBox').append(tmpl);
                             })
                         })
                         .catch(function (error) {
-                            console.log("#ERROR", error.data);
+                            console.log("#ERROR", error);
                         });
                 }
             });
@@ -307,6 +323,16 @@
                     signOut()
                 }
             });
+            const DEF_DATA = [{ "keyPhrase": "great picture", "sentiment": "positive", "relevanceScore": 0.998402, "reviewIds": [203382], "ctx": true }, { "keyPhrase": "dual sim features", "sentiment": "positive", "relevanceScore": 0.977635, "reviewIds": [203371], "ctx": true }, { "keyPhrase": "dual sim features", "sentiment": "positive", "relevanceScore": 0.977635, "reviewIds": [203389], "ctx": true }, { "keyPhrase": "great phone", "sentiment": "positive", "relevanceScore": 0.973762, "reviewIds": [203380], "ctx": true }, { "keyPhrase": "wonderful phone", "sentiment": "positive", "relevanceScore": 0.965728, "reviewIds": [203386], "ctx": true }, { "keyPhrase": "Battery life", "sentiment": "positive", "relevanceScore": 0.964974, "reviewIds": [203389], "ctx": true }, { "keyPhrase": "Battery life", "sentiment": "positive", "relevanceScore": 0.964974, "reviewIds": [203371], "ctx": true }, { "keyPhrase": "Great product", "sentiment": "positive", "relevanceScore": 0.889316, "reviewIds": [203385], "ctx": true }, { "keyPhrase": "global unlocked phone", "sentiment": "negative", "relevanceScore": 0.927742, "reviewIds": [203377], "ctx": true }, { "keyPhrase": "global unlocked phone", "sentiment": "negative", "relevanceScore": 0.927742, "reviewIds": [203395], "ctx": true }];
+            DEF_DATA.forEach((dt) => {
+                var tmpl = $(`<div class="${dt.sentiment}"><div>${dt.keyPhrase}</div><p>Reviews(${dt.reviewIds.length})</p></div>`);
+                tmpl.data('id', dt.reviewIds);
+                tmpl.data('keyPhrase', dt.keyPhrase);
+                tmpl.data('url', 'https://35.193.179.215/datasets/reviews/huawei_p9_plus_(p9+)_vie-l29_64gb_5.5_inch_12_mp_dual_sim_lte_factory_unlocked_-_international_stock_no_warranty_(quartz_grey).csv');
+                tmpl.click(getReviewDetail);
+                $('#reviewBox').append(tmpl);
+            });
+            $($('#reviewBox').children()[0]).trigger('click');
         });
     </script>
 </body>
