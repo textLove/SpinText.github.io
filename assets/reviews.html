@@ -92,6 +92,27 @@
             height: 50%;
         }
 
+        div#bar {
+            display: flex;
+            margin-bottom: 10px;
+            width: 400px;
+
+        }
+
+        div#bar img {
+            width: 20px;
+            height: 20px;
+        }
+
+        div#bar>div {
+            display: flex;
+        }
+
+        div#bar>div p {
+            padding: 0;
+            margin: 0 5px;
+        }
+
         body {
             background-color: #e2e1e0;
         }
@@ -209,6 +230,7 @@
             </div>
             <div class="imgMainBOx">
                 <label for="textArea2">Output</label>
+                <div id="bar"></div>
                 <div>
                     <div id="reviewBox">
 
@@ -256,6 +278,9 @@
                 var ID = el.data('id');
                 var keyPhrase = el.data('keyPhrase');
                 var url = el.data('url');
+                var similarPhrases = el.data('similarPhrases');
+                var SYN = {}
+                similarPhrases.forEach(x => SYN[x] = keyPhrase);
                 if (ID) {
                     $('#msgBox').empty();
                     axios.post('https://35.193.179.215:443/reviews', {
@@ -267,6 +292,7 @@
                         )
                         $('#msgBox').mark(keyPhrase, {
                             className: 'marked',
+                            synonyms: SYN,
                             separateWordSearch: false
                         })
                     }).catch(function (error) {
@@ -286,7 +312,17 @@
                     $('#pan1').show();
                 }
             })
+            function getBar(apiData) {
+                $('#bar').empty();
+                $('#bar').append(`
+                           <div>Total Reviews: ${apiData.totalReviews}</div>
+                           <div><p>&#128578;</p> ${apiData.positvieReviwes}</div>
+                           <div><p>&#128577;</p> ${apiData.negativeReviews}</div>
+                           <div><p>&#128528;</p> ${apiData.neutralReviwes}</div>
+                            `)
+            }
             $('#convert').click(function () {
+                $('#bar').empty();
                 $('#msgBox').empty()
                 $('#convert').text('Loading....').attr("disabled", true);
                 $('#reviewBox').empty();
@@ -298,11 +334,14 @@
                             $('#convert').text('Convert').attr("disabled", false);
                             const apiData = apiResponse.data
                             debugger
-                            apiData.forEach((dt) => {
+                            getBar(apiData);
+                            var DATA1 = JSON.parse(apiData.reviewSummary);
+                            DATA1.forEach((dt) => {
                                 var tmpl = $(`<div class="${dt.sentiment}"><div>${dt.keyPhrase}</div><p>Reviews(${dt.reviewIds.length})</p></div>`);
                                 tmpl.data('id', dt.reviewIds);
                                 tmpl.data('keyPhrase', dt.keyPhrase);
                                 tmpl.data('url', DATA);
+                                tmpl.data('similarPhrases', apiData.similarPhrases[dt.keyPhrase] || []);
                                 tmpl.click(getReviewDetail);
                                 $('#reviewBox').append(tmpl);
                             })
@@ -323,11 +362,13 @@
                     signOut()
                 }
             });
-            const DEF_DATA = [{ "keyPhrase": "great picture", "sentiment": "positive", "relevanceScore": 0.998402, "reviewIds": [203382], "ctx": true }, { "keyPhrase": "dual sim features", "sentiment": "positive", "relevanceScore": 0.977635, "reviewIds": [203371], "ctx": true }, { "keyPhrase": "dual sim features", "sentiment": "positive", "relevanceScore": 0.977635, "reviewIds": [203389], "ctx": true }, { "keyPhrase": "great phone", "sentiment": "positive", "relevanceScore": 0.973762, "reviewIds": [203380], "ctx": true }, { "keyPhrase": "wonderful phone", "sentiment": "positive", "relevanceScore": 0.965728, "reviewIds": [203386], "ctx": true }, { "keyPhrase": "Battery life", "sentiment": "positive", "relevanceScore": 0.964974, "reviewIds": [203389], "ctx": true }, { "keyPhrase": "Battery life", "sentiment": "positive", "relevanceScore": 0.964974, "reviewIds": [203371], "ctx": true }, { "keyPhrase": "Great product", "sentiment": "positive", "relevanceScore": 0.889316, "reviewIds": [203385], "ctx": true }, { "keyPhrase": "global unlocked phone", "sentiment": "negative", "relevanceScore": 0.927742, "reviewIds": [203377], "ctx": true }, { "keyPhrase": "global unlocked phone", "sentiment": "negative", "relevanceScore": 0.927742, "reviewIds": [203395], "ctx": true }];
-            DEF_DATA.forEach((dt) => {
+            const DEF_DATA = { "negativeReviews": 5, "neutralReviwes": 0, "otherReviews": 0, "positvieReviwes": 22, "reviewSummary": "[{\"keyPhrase\": \"dual sim features\", \"sentiment\": \"positive\", \"relevanceScore\": 0.977635, \"reviewIds\": [203371, 203379, 203389, 203394], \"ctx\": true}, {\"keyPhrase\": \"Battery life\", \"sentiment\": \"positive\", \"relevanceScore\": 0.964974, \"reviewIds\": [203371, 203376, 203378, 203379, 203385, 203389, 203394], \"ctx\": true}, {\"keyPhrase\": \"quality\", \"sentiment\": \"positive\", \"relevanceScore\": 0.669577, \"reviewIds\": [203382, 203394], \"ctx\": true}, {\"keyPhrase\": \"newer version\", \"sentiment\": \"positive\", \"relevanceScore\": 0.580799, \"reviewIds\": [203376, 203394], \"ctx\": true}, {\"keyPhrase\": \"Camera\", \"sentiment\": \"positive\", \"relevanceScore\": 0.578194, \"reviewIds\": [203371, 203373, 203376, 203379, 203389, 203391, 203392, 203394], \"ctx\": true}, {\"keyPhrase\": \"smart controller\", \"sentiment\": \"positive\", \"relevanceScore\": 0.577373, \"reviewIds\": [203378], \"ctx\": true}, {\"keyPhrase\": \"new sim card\", \"sentiment\": \"negative\", \"relevanceScore\": 0.713169, \"reviewIds\": [203372, 203377, 203384, 203390, 203395], \"ctx\": true}, {\"keyPhrase\": \"AT&T networks\", \"sentiment\": \"negative\", \"relevanceScore\": 0.692262, \"reviewIds\": [203372, 203377, 203384, 203390, 203395], \"ctx\": true}, {\"keyPhrase\": \"good amount of effort\", \"sentiment\": \"negative\", \"relevanceScore\": 0.685431, \"reviewIds\": [203372, 203377, 203384, 203390, 203395], \"ctx\": true}, {\"keyPhrase\": \"remote area\", \"sentiment\": \"negative\", \"relevanceScore\": 0.65432, \"reviewIds\": [203384], \"ctx\": true}]", "similarPhrases": { "1hr": ["1hr"], "3G": ["4G label", "P9"], "3G signal": ["4G label"], "3G.": ["4G label", "P9"], "4-wk": ["4-wk"], "4G": ["4G label", "P9"], "4G coverage": ["4G label"], "4G failure": ["4G label"], "4G label": ["4G label"], "4G problem": ["4G label"], "4G sim card": ["new sim card", "4G label"], "4G.": ["4G label", "P9"], "6p": ["6p"], "AT&T": [], "AT&T nano sim card": ["new sim card"], "AT&T networks": ["AT&T networks"], "AT&T store": ["AT&T store"], "Android phones": ["Android phones"], "Battery life": ["Battery life"], "Camera": ["Camera"], "Case": ["Order", "transparent case"], "China": ["China"], "Cons": ["Pros"], "Data": ["Data"], "Google": ["websites"], "Great phone": ["video games", "future"], "Great product": ["Order"], "Group Texting": ["group of recipients"], "HTC smartphones": ["Android phones"], "Huawei": ["Huawei"], "Huawei Ascend P9": ["Huawei", "6p"], "Huawei P8 lite": ["P9"], "Huawei P9": ["P9"], "Huawei p9 plus": ["plus", "6p"], "Huawei phones": ["Huawei"], "Huawei smartphone": ["Android phones", "Huawei"], "Incredible battery life": ["Battery life"], "Iphone 5S": ["Android phones", "apple"], "K-9 Mail": ["P9"], "L29": ["P9"], "LTE": ["LTE"], "LTE functionality": ["LTE", "wifi"], "Mega Mobile": ["AT&T networks", "free Android applications"], "Order": ["Order"], "P8": ["P9"], "P9": ["6p", "P9"], "Perfect Fit": ["Perfect Fit"], "Premium Leather Cover": ["plus"], "Pros": [], "Quality Deals Shopping Center": ["new sim card"], "Samsung": ["Samsung Note"], "Samsung Note": ["Samsung Note"], "Screen": ["video games", "Camera"], "Storage": ["Storage"], "TIMES": ["day", "number"], "Thanks": ["good amount of effort"], "USA for3 days": ["video games"], "Ultra Thin Slim": ["Ultra Thin Slim"], "Update": ["Update"], "Wow Google Map": ["Wow Google Map"], "accessories": ["accessories"], "adaptive outlet": [], "addition": ["good amount of effort", "various APN settings"], "amazon website": [], "apple": ["apple"], "apps": ["Android phones"], "area": ["area"], "authorized seller of the phone": ["new sim card"], "background": [], "battery": ["Battery life"], "best fingerprint reader": ["fingerprint touch"], "best phone": ["video games", "day"], "buildings": [], "bundled apps": ["Android phones"], "camera": ["pictures", "Camera"], "capability": ["capability"], "case": ["good amount of effort", "investigation"], "cell radio bands": ["cell radio bands"], "cellphone": ["Android phones"], "center of a big metro area": ["good amount of effort"], "chance": ["day", "Perfect Fit"], "charge": ["Order"], "contacts": [], "course of action": ["good amount of effort", "side"], "customization": [], "day": ["day"], "days": ["day"], "delivery": [], "double speakers": ["dual sim features"], "double-camera": ["video games", "dual sim features"], "downside": ["downside"], "dual sim features": ["dual sim features"], "easy fix": ["Perfect Fit"], "end of work day": ["video games"], "example": ["good amount of effort"], "faulty sim card": ["new sim card"], "favorite email client": ["new sim card"], "favorite smartphone": ["Android phones"], "fellow shoppers": ["friends"], "filters": ["filters"], "fingerprint touch": ["fingerprint touch"], "first time": ["video games", "Order"], "flexibility": ["patience"], "free Android applications": [], "friends": [], "front of each contact number": ["new sim card"], "front phone numbers": ["video games"], "future": ["future"], "global unlocked phone": ["new sim card", "Data"], "good amount of effort": ["good amount of effort"], "good coverage": ["future", "day"], "good features": ["good amount of effort"], "google apps": ["Android phones", "websites"], "google play": ["video games"], "great camera": ["video games"], "great choice": ["Order"], "great job": ["Order"], "great phone": ["video games"], "great picture": ["future"], "group": ["group of recipients"], "group information": ["new sim card"], "group of recipients": [], "group text capability": ["Order"], "iPhone": ["Android phones", "apple"], "iPhone system": ["Android phones", "system"], "iPhones": ["Android phones"], "image quality.The phone": ["new sim card", "good amount of effort"], "imitation of iPhone interface": ["Android phones"], "individual text message": ["new sim card"], "international format": ["video games", "system"], "international phone": ["day", "cell radio bands"], "international travelers": [], "internet": ["new sim card", "AT&T networks"], "invalid recipient": ["recipient"], "investigation": ["investigation"], "iphone": ["Android phones", "apple"], "issue": ["good amount of effort"], "item": [], "lot": ["good amount of effort"], "lot of freedom": ["future"], "love": ["love"], "market": [], "message": [], "messages": ["message"], "messenger": [], "minutes": ["minutes"], "model": [], "models": ["model"], "month of use": ["video games"], "months": ["day"], "much cheaper P8 lite": ["good amount of effort", "P9"], "music": ["cell radio bands"], "needs": ["good amount of effort"], "new emails": ["new sim card"], "new sim card": ["new sim card"], "newer version": ["newer version"], "number": ["number"], "old P9": ["P9"], "older phones": ["Android phones", "newer version"], "patience": ["patience"], "penny": [], "phone": ["Android phones", "new sim card", "cell radio bands", "AT&T networks", "message"], "phone numbers": ["new sim card"], "phones": ["Android phones", "free Android applications"], "photos": [], "pictures": ["pictures"], "plus": ["plus"], "premium features": ["various APN settings"], "pro photographer": ["pro photographer"], "pro shots": ["video games"], "problems": ["good amount of effort"], "quality": [], "readers": ["readers"], "reason": ["Order", "future"], "recipient": [], "recipients": ["group of recipients"], "recipients' involvements": [], "remote area": [], "reply": [], "ringtones": ["ringtones"], "screen protecter": ["video games", "Camera"], "seller": [], "side": ["side"], "signal strength": ["good amount of effort"], "silicon valley": ["silicon valley"], "sim": ["new sim card"], "sim card": ["new sim card"], "small screen": ["Camera", "cell radio bands"], "smart controller": [], "smart phone": ["new sim card", "message"], "sof mode": [], "solid phone": ["cell radio bands", "Perfect Fit"], "special effects": ["future", "quality"], "stuff": ["Perfect Fit", "love"], "suggestions": ["suggestions"], "system": ["system"], "taiwan": [], "temperature": ["temperature"], "text": ["text"], "thanks": [], "tiny one-story house": ["new sim card"], "transparent case": ["transparent case"], "update": ["update"], "usage": ["usage"], "users": ["readers", "Data"], "various APN settings": ["various APN settings"], "video games": ["video games"], "way": ["good amount of effort", "side", "message"], "weather": ["weather"], "websites": ["websites"], "weeks": ["day", "good amount of effort", "number"], "weeks' usage": ["good amount of effort"], "wife": ["wife"], "wifi": ["wifi"], "wonderful phone": ["Perfect Fit"], "worst phone": ["video games", "day"], "xxx-xxx-xxx": ["xxx-xxx-xxx"] }, "totalReviews": 27 }
+            getBar(DEF_DATA);
+            JSON.parse(DEF_DATA.reviewSummary).forEach((dt) => {
                 var tmpl = $(`<div class="${dt.sentiment}"><div>${dt.keyPhrase}</div><p>Reviews(${dt.reviewIds.length})</p></div>`);
                 tmpl.data('id', dt.reviewIds);
                 tmpl.data('keyPhrase', dt.keyPhrase);
+                tmpl.data('similarPhrases', DEF_DATA.similarPhrases[dt.keyPhrase] || []);
                 tmpl.data('url', 'https://35.193.179.215/datasets/reviews/huawei_p9_plus_(p9+)_vie-l29_64gb_5.5_inch_12_mp_dual_sim_lte_factory_unlocked_-_international_stock_no_warranty_(quartz_grey).csv');
                 tmpl.click(getReviewDetail);
                 $('#reviewBox').append(tmpl);
